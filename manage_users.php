@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sql = "INSERT INTO users (username, email, password, fullname, age, contact_number, complete_address, role, drivers_license, barangay_clearance, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
         $stmt = $conn->prepare($sql);
-        
+
         if ($stmt) {
             $stmt->bind_param('ssssissssss', $username, $email, $password, $fullname, $age, $contact_number, $complete_address, $role, $drivers_license, $barangay_clearance);
 
@@ -146,7 +146,8 @@ $users_sql = "SELECT username, email, fullname, age, contact_number, complete_ad
 $users_result = $conn->query($users_sql);
 $conn->close();
 
-function sendVerificationEmail($email, $fullname) {
+function sendVerificationEmail($email, $fullname)
+{
     $mail = new PHPMailer(true);
 
     try {
@@ -178,19 +179,23 @@ function sendVerificationEmail($email, $fullname) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
     <style>
         body {
             background-color: #e9ecef;
             font-family: 'Arial', sans-serif;
         }
+
         .sidebar {
-            width: 240px; 
+            width: 240px;
             background-color: #343a40;
             color: #fff;
             padding: 20px;
@@ -201,10 +206,12 @@ function sendVerificationEmail($email, $fullname) {
             overflow-y: auto;
             transition: background-color 0.3s;
         }
+
         .sidebar h2 {
             margin-top: 0;
             font-size: 1.5rem;
         }
+
         .sidebar a {
             color: #fff;
             text-decoration: none;
@@ -213,92 +220,152 @@ function sendVerificationEmail($email, $fullname) {
             border-radius: 5px;
             transition: background-color 0.3s;
         }
+
         .sidebar a:hover {
             background-color: #495057;
         }
+
         .content {
-            margin-left: 250px; 
+            margin-left: 250px;
             padding: 20px;
         }
-        .user-card {
-            margin-bottom: 20px;
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .user-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
+
+
         .btn-custom {
             margin-right: 5px;
         }
+
         .modal-header {
             background-color: #343a40;
             color: white;
         }
+
         .modal-footer {
             border-top: none;
         }
+
         .alert {
-            display: none; /* Initially hidden */
+            display: none;
+            /* Initially hidden */
+        }
+        .nav-link.active {
+            background-color: #007bff !important;
+            /* Bootstrap primary color */
+            color: white !important;
+            border-radius: 5px;
         }
     </style>
 </head>
+
 <body>
 <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link" href="admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_vehicles.php"><i class="fas fa-car"></i> Manage Vehicles</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_users.php"><i class="fas fa-users"></i> Manage Users</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_bookings.php"><i class="fas fa-book"></i> Manage Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="vehicle_inventory.php"><i class="fas fa-book"></i> Vehicle Inventory</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_testimonials.php"><i class="fas fa-comments"></i> Manage Testimonials</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_contact_us.php"><i class="fas fa-envelope-open-text"></i> Manage Contact Us</a></li>
-            <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
+    <h2>Admin Menu</h2>
+    <ul class="nav flex-column">
+        <?php 
+        $current_page = basename($_SERVER['PHP_SELF']); 
+        ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>" href="admin_dashboard.php">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_vehicles.php') ? 'active' : ''; ?>" href="manage_vehicles.php">
+                <i class="fas fa-car"></i> Manage Vehicles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_users.php') ? 'active' : ''; ?>" href="manage_users.php">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_bookings.php') ? 'active' : ''; ?>" href="manage_bookings.php">
+                <i class="fas fa-book"></i> Manage Bookings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'vehicle_inventory.php') ? 'active' : ''; ?>" href="vehicle_inventory.php">
+                <i class="fas fa-book"></i> Vehicle Inventory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_testimonials.php') ? 'active' : ''; ?>" href="manage_testimonials.php">
+                <i class="fas fa-comments"></i> Manage Testimonials
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_contact_us.php') ? 'active' : ''; ?>" href="manage_contact_us.php">
+                <i class="fas fa-envelope-open-text"></i> Manage Contact Us
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="logout.php">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
     <div class="content">
         <h1 class="text-center">Manage Users</h1>
         <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
         <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addUserModal"><i class="fas fa-plus"></i> Add New User</button>
 
-        <h2 class="mt-4">Users</h2>
-        <?php while($user = $users_result->fetch_assoc()): ?>
-            <div class="user-card p-3">
-                <h5><?php echo htmlspecialchars($user['fullname']); ?> (<?php echo htmlspecialchars($user['username']); ?>)</h5>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                <p><strong>Age:</strong> <?php echo htmlspecialchars($user['age']); ?></p>
-                <p><strong>Contact Number:</strong> <?php echo htmlspecialchars($user['contact_number']); ?></p>
-                <p><strong>Address:</strong> <?php echo htmlspecialchars($user['complete_address']); ?></p>
-                <p><strong>Role:</strong> <?php echo htmlspecialchars($user['role']); ?></p>
-                
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-warning btn-custom" onclick='editUser(<?php echo json_encode($user); ?>)'><i class="fas fa-edit"></i> Edit</button>
-                    <form action="manage_users.php" method="post" style="display:inline;">
-                        <input type="hidden" name="username" value="<?php echo htmlspecialchars($user['username']); ?>">
-                        <button type="submit" name="delete_user" class="btn btn-danger btn-custom">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </form>
-                    <form action="manage_users.php" method="post" style="display:inline;">
-                        <input type="hidden" name="username" value="<?php echo htmlspecialchars($user['username']); ?>">
-                        <?php if (!$user['verified']): ?>
-                            <button type="submit" name="verify_user" class="btn btn-success btn-custom">
-                                <i class="fas fa-check"></i> Verify
-                            </button>
-                        <?php else: ?>
-                            <button class="btn btn-secondary btn-custom" disabled>
-                                <i class="fas fa-check"></i> Verified
-                            </button>
-                        <?php endif; ?>
-                    </form>
-                </div>
-            </div>
-        <?php endwhile; ?>
+
+        <table id="user_table" class="display">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Contact Number</th>
+                    <th>Address</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($user = $users_result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($user['fullname']); ?></td>
+                        <td><?php echo htmlspecialchars($user['username']); ?></td>
+                        <td><?php echo htmlspecialchars($user['email']); ?></td>
+                        <td><?php echo htmlspecialchars($user['age']); ?></td>
+                        <td><?php echo htmlspecialchars($user['contact_number']); ?></td>
+                        <td><?php echo htmlspecialchars($user['complete_address']); ?></td>
+                        <td><?php echo htmlspecialchars($user['role']); ?></td>
+                        <td class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary btn-custom btn-sm " onclick='editUser(<?php echo json_encode($user); ?>)'>
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <a href="manage_users.php?delete_user=1&username=<?php echo urlencode($user['username']); ?>"
+                                class="btn btn-danger btn-custom btn-sm "
+                                onclick="return confirm('Are you sure you want to delete this user?');">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+
+                            <?php if (!$user['verified']): ?>
+                                <a href="manage_users.php?verify_user=1&username=<?php echo urlencode($user['username']); ?>"
+                                    class="btn btn-success btn-custom btn-sm">
+                                    <i class="fas fa-check"></i> Verify
+                                </a>
+                            <?php else: ?>
+                                <a href="#" class="btn btn-success btn-custom btn-sm disabled">
+                                    <i class="fas fa-check"></i> Verified
+                                </a>
+                            <?php endif; ?>
+                        </td>
+
+                    </tr>
+                <?php endwhile; ?>
+
+            </tbody>
+
+        </table>
+
 
         <!-- Modal for adding a new user -->
         <div id="addUserModal" class="modal fade" tabindex="-1" role="dialog">
@@ -363,9 +430,11 @@ function sendVerificationEmail($email, $fullname) {
             </div>
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
 
         <script>
             function editUser(user) {
@@ -414,6 +483,12 @@ function sendVerificationEmail($email, $fullname) {
                 $('#editUserModal').modal('show');
             }
         </script>
+        <script>
+            $(document).ready(function() {
+                $('#user_table').DataTable();
+            });
+        </script>
     </div>
 </body>
+
 </html>

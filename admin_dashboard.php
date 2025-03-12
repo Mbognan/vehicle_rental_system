@@ -144,6 +144,12 @@ $conn->close();
         .hidden {
             display: none; 
         }
+        .nav-link.active {
+            background-color: #007bff !important;
+            /* Bootstrap primary color */
+            color: white !important;
+            border-radius: 5px;
+        }
     </style>
     <script>
         function toggleVisibility(sectionId) {
@@ -153,22 +159,55 @@ $conn->close();
     </script>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link" href="admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_vehicles.php"><i class="fas fa-car"></i> Manage Vehicles</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_users.php"><i class="fas fa-users"></i> Manage Users</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_bookings.php"><i class="fas fa-book"></i> Manage Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="vehicle_inventory.php"><i class="fas fa-book"></i> Vehicle Inventory</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_testimonials.php"><i class="fas fa-comments"></i> Manage Testimonials</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_contact_us.php"><i class="fas fa-envelope-open-text"></i> Manage Contact Us</a></li>
-            <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-        <?php if (isset($_SESSION['username'])): ?>
-            <p class="text-center mt-3">Logged in as: <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></p>
-        <?php endif; ?>
-    </div>
+<div class="sidebar">
+    <h2>Admin Menu</h2>
+    <ul class="nav flex-column">
+        <?php 
+        $current_page = basename($_SERVER['PHP_SELF']); 
+        ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>" href="admin_dashboard.php">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_vehicles.php') ? 'active' : ''; ?>" href="manage_vehicles.php">
+                <i class="fas fa-car"></i> Manage Vehicles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_users.php') ? 'active' : ''; ?>" href="manage_users.php">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_bookings.php') ? 'active' : ''; ?>" href="manage_bookings.php">
+                <i class="fas fa-book"></i> Manage Bookings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'vehicle_inventory.php') ? 'active' : ''; ?>" href="vehicle_inventory.php">
+                <i class="fas fa-book"></i> Vehicle Inventory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_testimonials.php') ? 'active' : ''; ?>" href="manage_testimonials.php">
+                <i class="fas fa-comments"></i> Manage Testimonials
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_contact_us.php') ? 'active' : ''; ?>" href="manage_contact_us.php">
+                <i class="fas fa-envelope-open-text"></i> Manage Contact Us
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="logout.php">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
 
     <div class="content">
         <center><h1>Admin Dashboard</h1></center>

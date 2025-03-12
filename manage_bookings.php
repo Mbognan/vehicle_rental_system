@@ -99,20 +99,33 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Bookings</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <style>
+        .address-column {
+            min-width: 200px;
+            /* Ensures enough space */
+            max-width: 200px;
+            /* Prevents it from being too large */
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
+
     <style>
         body {
             display: flex;
             height: 100vh;
             font-family: Arial, sans-serif;
         }
+
         .sidebar {
             width: 240px;
             background-color: #343a40;
@@ -124,172 +137,258 @@ $conn->close();
             height: 100%;
             overflow-y: auto;
         }
+
         .sidebar h2 {
             margin-top: 0;
             font-size: 1.5rem;
         }
+
         .sidebar a {
             color: #fff;
             text-decoration: none;
         }
+
         .sidebar a:hover {
             background-color: #495057;
             padding: 10px;
             border-radius: 5px;
         }
+
         .content {
-            margin-left: 240px; /* Adjusted for sidebar */
+            margin-left: 240px;
+            /* Adjusted for sidebar */
             padding: 20px;
             flex-grow: 1;
             background-color: #f8f9fa;
-            overflow-y: auto; /* Allows scrolling if content is long */
+            overflow-y: auto;
+            /* Allows scrolling if content is long */
         }
-        .booking-card {
-            border: 1px solid #ddd;
-            border-radius: 5px; /* Softened corners */
-            padding: 20px;
-            margin: 10px 0;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-            max-width: 600px;
-            width: 100%; /* Ensure it takes full width */
-        }
-        .booking-card:hover {
-            transform: scale(1.02);
-        }
+
         .btn {
             margin-right: 5px;
         }
+        .nav-link.active {
+            background-color: #007bff !important;
+            /* Bootstrap primary color */
+            color: white !important;
+            border-radius: 5px;
+        }
     </style>
 </head>
+
 <body>
 <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link" href="admin_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_vehicles.php"><i class="fas fa-car"></i> Manage Vehicles</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_users.php"><i class="fas fa-users"></i> Manage Users</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_bookings.php"><i class="fas fa-book"></i> Manage Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="vehicle_inventory.php"><i class="fas fa-book"></i> Vehicle Inventory</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_testimonials.php"><i class="fas fa-comments"></i> Manage Testimonials</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_contact_us.php"><i class="fas fa-envelope-open-text"></i> Manage Contact Us</a></li>
-            <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
+    <h2>Admin Menu</h2>
+    <ul class="nav flex-column">
+        <?php 
+        $current_page = basename($_SERVER['PHP_SELF']); 
+        ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'admin_dashboard.php') ? 'active' : ''; ?>" href="admin_dashboard.php">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_vehicles.php') ? 'active' : ''; ?>" href="manage_vehicles.php">
+                <i class="fas fa-car"></i> Manage Vehicles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_users.php') ? 'active' : ''; ?>" href="manage_users.php">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_bookings.php') ? 'active' : ''; ?>" href="manage_bookings.php">
+                <i class="fas fa-book"></i> Manage Bookings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'vehicle_inventory.php') ? 'active' : ''; ?>" href="vehicle_inventory.php">
+                <i class="fas fa-book"></i> Vehicle Inventory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_testimonials.php') ? 'active' : ''; ?>" href="manage_testimonials.php">
+                <i class="fas fa-comments"></i> Manage Testimonials
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'manage_contact_us.php') ? 'active' : ''; ?>" href="manage_contact_us.php">
+                <i class="fas fa-envelope-open-text"></i> Manage Contact Us
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="logout.php">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
 
 
     <div class="content">
-        <center><h1>Manage Bookings</h1></center>
+        <center>
+            <h1>Manage Bookings</h1>
+        </center>
         <?php if ($message): ?>
             <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
         <?php endif; ?>
 
         <h2>All User Bookings</h2>
-        <?php if ($booking_result->num_rows > 0): ?>
-            <?php while ($booking = $booking_result->fetch_assoc()): ?>
-                <div class="booking-card">
-                    <h5>Booking ID: <?php echo htmlspecialchars($booking['booking_id']); ?></h5>
-                    <p>User: <?php echo htmlspecialchars($booking['username']); ?></p>
-                    <p>fullname: <?php echo htmlspecialchars($booking['fullname']); ?></p>
-                    <p>Vehicle: <?php echo htmlspecialchars($booking['brand'] . ' ' . $booking['model']); ?></p>
-                    <p>Start: <?php echo isset($booking['start_date_and_time']) ? date('d-m-Y H:i', strtotime($booking['start_date_and_time'])) : 'N/A'; ?></p>
-                    <p>End: <?php echo isset($booking['end_date_and_time']) ? date('d-m-Y H:i', strtotime($booking['end_date_and_time'])) : 'N/A'; ?></p>
-                    <p>Complete Address: <?php echo htmlspecialchars($booking['complete_address']); ?></p>
-                    <p>Mobile: <?php echo htmlspecialchars($booking['mobile']); ?></p>
-                    <p>Email: <?php echo htmlspecialchars($booking['email']); ?></p>
-                    <p>Pick-Up Location: <?php echo htmlspecialchars($booking['pickup_location']); ?></p>
-                    <p>Drop-Off Location: <?php echo htmlspecialchars($booking['dropoff_location']); ?></p>
-                    <p>Status: <strong><?php echo htmlspecialchars($booking['status']); ?></strong></p>
-                    <p>Proof of Payment: 
-                        <?php if (!empty($booking['proof_payment'])): ?>
-                            <a href="uploads/<?php echo htmlspecialchars($booking['proof_payment']); ?>" target="_blank">
-                                View Proof of Payment
+        <table id="booking_table" class="cell-border">
+            <thead>
+                <tr>
+
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Vehicle</th>
+                    <th>Start and End Date</th>
+                    <th style="width: 250px;"> Complete Address</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Pick-Up Location</th>
+                    <th>Drop-Off Location</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th class="text-center">Actions</th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                <?php while ($booking = $booking_result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($booking['booking_id']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['fullname']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['brand'] . ' ' . $booking['model']); ?></td>
+                        <td>
+                            <span class="badge badge-pill badge-primary">
+                                <?php
+                                echo isset($booking['start_date_and_time']) && isset($booking['end_date_and_time'])
+                                    ? date('d-m-Y H:i', strtotime($booking['start_date_and_time'])) . " ⟶ " . date('d-m-Y H:i', strtotime($booking['end_date_and_time']))
+                                    : 'N/A';
+                                ?>
+                            </span>
+                        </td>
+                        <td class="address-column "><?php echo htmlspecialchars($booking['complete_address']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['mobile']); ?></td>
+                        <td><?php echo htmlspecialchars($booking['email']); ?></td>
+                        <td class="address-column"><?php echo htmlspecialchars($booking['pickup_location']); ?></td>
+                        <td class="address-column"><?php echo htmlspecialchars($booking['dropoff_location']); ?></td>
+                        <td>
+                            <span class="badge badge-<?php echo ($booking['status'] === 'confirmed') ? 'success' : (($booking['status'] === 'canceled') ? 'danger' : 'warning'); ?>">
+                                <?php echo htmlspecialchars(ucwords($booking['status'])); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?php if (!empty($booking['proof_payment'])): ?>
+                                <a href="uploads/<?php echo htmlspecialchars($booking['proof_payment']); ?>" class="btn btn-info btn-sm" target="_blank">
+                                    View Payment
+                                </a>
+                            <?php else: ?>
+                                <span class="text-muted">No proof uploaded</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-nowrap">
+                            <a href="manage_bookings.php?delete_booking=1&booking_id=<?php echo urlencode($booking['booking_id']);  ?>"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this booking?');">
+                                <i class="fas fa-trash"></i> Delete
                             </a>
-                        <?php else: ?>
-                            No proof uploaded.
-                        <?php endif; ?>
-                    </p>
+                            <a href="manage_bookings.php?update_status=completed&booking_id=<?php echo urlencode($booking['booking_id']); ?>"
+                                class="btn btn-success btn-sm">
+                                <i class="fas fa-check"></i> Completed
+                            </a>
+                            <a href="manage_bookings.php?update_status=canceled&booking_id=<?php echo urlencode($booking['booking_id']); ?>"
+                                class="btn btn-warning btn-sm">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editBookingModal<?php echo $booking['booking_id']; ?>">
+                                <i class="fas fa-check"></i> Verify
+                            </a>
+                        </td>
 
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
-                        <button type="submit" name="delete_booking" class="btn btn-danger">Delete</button>
-                    </form>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
-                        <button type="submit" name="update_status" value="completed" class="btn btn-success">Mark as Completed</button>
-                        <button type="submit" name="update_status" value="canceled" class="btn btn-warning">Cancel</button>
-                    </form>
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editBookingModal<?php echo $booking['booking_id']; ?>">Verify</button>
+            </tbody>
+        </table>
+    </div>
+    <!-- Verify Booking Modal -->
+    <div class="modal fade" id="editBookingModal<?php echo $booking['booking_id']; ?>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Verify Booking</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-
-                <!-- Verify Booking Modal -->
-                <div class="modal fade" id="editBookingModal<?php echo $booking['booking_id']; ?>" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Verify Booking</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form action="verify_booking.php" method="post">
-                                <div class="modal-body">
-                                    <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
-                                    <div class="form-group">
-                                        <label for="start_date">Start Date:</label>
-                                        <input type="date" name="start_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($booking['start_date_and_time'])); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="start_time">Start Time:</label>
-                                        <input type="time" name="start_time" class="form-control" value="<?php echo date('H:i', strtotime($booking['start_date_and_time'])); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="end_date">End Date:</label>
-                                        <input type="date" name="end_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($booking['end_date_and_time'])); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="end_time">End Time:</label>
-                                        <input type="time" name="end_time" class="form-control" value="<?php echo date('H:i', strtotime($booking['end_date_and_time'])); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="pickup_location">Pick-Up Location:</label>
-                                        <input type="text" name="pickup_location" class="form-control" value="<?php echo htmlspecialchars($booking['pickup_location']); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dropoff_location">Drop-Off Location:</label>
-                                        <input type="text" name="dropoff_location" class="form-control" value="<?php echo htmlspecialchars($booking['dropoff_location']); ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                <label for="status">Email:</label>
-                                <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($booking['email']); ?>" required>
-                                </div>
-                                    <div class="form-group">
-                                        <label for="status">Status:</label>
-                                        <select name="status" class="form-control" required>
-                                            <option value="<?php echo htmlspecialchars($booking['status']); ?>">
-                                                <?php echo ucwords(htmlspecialchars($booking['status'])); ?>
-                                            </option>
-                                            <option value="pending">Pending</option>
-                                            <option value="confirmed">Confirmed</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" name="Verify_booking" class="btn btn-primary">Save changes</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </form>
+                <form action="verify_booking.php" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($booking['booking_id']); ?>">
+                        <div class="form-group">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" name="start_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($booking['start_date_and_time'])); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_time">Start Time:</label>
+                            <input type="time" name="start_time" class="form-control" value="<?php echo date('H:i', strtotime($booking['start_date_and_time'])); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" name="end_date" class="form-control" value="<?php echo date('Y-m-d', strtotime($booking['end_date_and_time'])); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_time">End Time:</label>
+                            <input type="time" name="end_time" class="form-control" value="<?php echo date('H:i', strtotime($booking['end_date_and_time'])); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup_location">Pick-Up Location:</label>
+                            <input type="text" name="pickup_location" class="form-control" value="<?php echo htmlspecialchars($booking['pickup_location']); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dropoff_location">Drop-Off Location:</label>
+                            <input type="text" name="dropoff_location" class="form-control" value="<?php echo htmlspecialchars($booking['dropoff_location']); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Email:</label>
+                            <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($booking['email']); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select name="status" class="form-control" required>
+                                <option value="<?php echo htmlspecialchars($booking['status']); ?>">
+                                    <?php echo ucwords(htmlspecialchars($booking['status'])); ?>
+                                </option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>No bookings found.</p>
-        <?php endif; ?>
+                    <div class="modal-footer">
+                        <button type="submit" name="Verify_booking" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+<?php endwhile; ?>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#booking_table').DataTable();
+    });
+</script>
 </body>
+
 </html>
