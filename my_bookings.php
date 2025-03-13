@@ -66,32 +66,54 @@ $conn->close();
         th, td {
             vertical-align: middle;
         }
+        .nav-link.active {
+            background-color:rgb(1, 31, 165);
+            /* Change this to your preferred color */
+            color: white !important;
+            font-weight: bold;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>User Menu</h2>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" href="user_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="my_bookings.php"><i class="fas fa-calendar-check"></i> My Bookings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="available_vehicles.php"><i class="fas fa-car"></i> Available Vehicles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="my-testimonials.php"> <i class="fas fa-star"></i> My Testimonials</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="account.php"><i class="fas fa-lock"></i> Account Settings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </li>
-        </ul>
-    </div>
+<?php
+$current_page = basename($_SERVER['PHP_SELF']); // Get the current page file name
+?>
+<div class="sidebar">
+    <h2>User Menu</h2>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'user_dashboard.php') ? 'active' : ''; ?>" href="user_dashboard.php">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'my_bookings.php') ? 'active' : ''; ?>" href="my_bookings.php">
+                <i class="fas fa-calendar-check"></i> My Bookings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'available_vehicles.php') ? 'active' : ''; ?>" href="available_vehicles.php">
+                <i class="fas fa-car"></i> Available Vehicles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'my-testimonials.php') ? 'active' : ''; ?>" href="my-testimonials.php">
+                <i class="fas fa-star"></i> My Testimonials
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'account.php') ? 'active' : ''; ?>" href="account.php">
+                <i class="fas fa-lock"></i> Account Settings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>" href="logout.php">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
     
     <div class="container">
         <h1 class="text-center"><i class="fas fa-calendar-alt"></i> My Booked Vehicles</h1>

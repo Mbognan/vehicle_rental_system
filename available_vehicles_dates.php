@@ -1,7 +1,6 @@
 <?php
 session_start();
-include 'db.php'; // Ensure this file properly connects to your database
-
+include 'db.php'; 
 // Check if vehicle_id is passed in the URL
 if (isset($_GET['vehicle_id']) && isset($_GET['vehicle_name'])) {
     $vehicle_id = intval($_GET['vehicle_id']); // Ensure the vehicle_id is an integer
@@ -27,7 +26,6 @@ if (isset($_GET['vehicle_id']) && isset($_GET['vehicle_name'])) {
             'end' => $endDateTime->format('F j, Y g:i A'),     // Formats to "March 23, 2024 8:40 PM"
         ];
     }
-
     // Close the statement and connection
     $stmt->close();
     $conn->close();

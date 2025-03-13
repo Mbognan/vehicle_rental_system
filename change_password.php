@@ -103,17 +103,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: none;
         }
 
-        .btn-primary:hover {
+        /* .btn-primary:hover {
             background-color: #0056b3;
-        }
+        } */
 
         .text-muted a {
             text-decoration: none;
         }
 
-        .text-muted a:hover {
+        /* .text-muted a:hover {
             color: #fff;
-        }
+        } */
     </style>
 </head>
 <body>

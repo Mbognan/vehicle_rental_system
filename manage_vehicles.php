@@ -66,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $perPage = 6;
 
-
 $totalCountQuery = $conn->query("SELECT COUNT(*) as total FROM vehicles");
 $totalCount = $totalCountQuery->fetch_assoc()['total'];
 
@@ -345,7 +344,6 @@ $conn->close();
         <div class="container">
             <br>
             <h4>Available Vehicles</h4>
-
             <!-- <input type="text" id="search" class="form-control mb-3" placeholder="Search Vehicles..."> -->
             <br>
             <div class="row" id="ads">
@@ -390,6 +388,9 @@ $conn->close();
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             </div>
+        </div>
+
+        <!-- Modal for Editing Vehicle -->
             <div class="d-flex justify-content-center">
                 <!-- Pagination Links -->
                 <nav>
